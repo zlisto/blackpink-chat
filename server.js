@@ -5,6 +5,7 @@ const OpenAI = require('openai');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -346,6 +347,15 @@ app.post('/api/login', async (req, res) => {
     console.error('Login error:', error);
     res.status(500).json({ success: false, error: 'Internal server error.' });
   }
+});
+
+// Serve React build static files
+const buildPath = path.join(__dirname, 'build');
+app.use(express.static(buildPath));
+
+// Catch-all route to serve index.html for React Router
+app.get('*', (req, res) => {
+  res.sendFile(path.join(buildPath, 'index.html'));
 });
 
 // Start server

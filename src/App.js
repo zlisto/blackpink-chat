@@ -97,15 +97,13 @@ function Navbar({ user, onLogout }) {
       <div style={{ marginLeft: 'auto', marginRight: 24, display: 'flex', alignItems: 'center' }}>
         {user ? (
           <>
-            <span style={{ color: '#ff3ebf', fontWeight: 'bold', marginRight: 12 }}>
-              {user.firstName} {user.lastName}
-            </span>
+            <span style={{ color: '#ff3ebf', fontWeight: 'bold', marginRight: 12 }}>{user.username}</span>
             <Logout onLogout={onLogout} />
           </>
         ) : (
           <>
             <Link to="/login" style={{ color: '#ff3ebf', marginLeft: 16, fontWeight: 'bold' }}>Login</Link>
-            <Link to="/register" style={{ color: '#ff3ebf', marginLeft: 16, fontWeight: 'bold' }}>Register</Link>
+            <Link to="/register" style={{ color: '#ff3ebf', marginLeft: 16, fontWeight: 'bold' }}>Create Account</Link>
           </>
         )}
       </div>

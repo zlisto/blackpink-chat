@@ -5,14 +5,14 @@ const OpenAI = require('openai');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Initialize OpenAI
 const openai = new OpenAI({
@@ -81,22 +81,14 @@ const defaultAgentPrompts = [
   }
 ];
 
-// Insert dummy prompts if not present
-async function ensureAgentPrompts() {
-  const agentsCollection = db.collection('agents');
-  for (const agent of defaultAgentPrompts) {
-    const exists = await agentsCollection.findOne({ name: agent.name });
-    if (!exists) {
-      await agentsCollection.insertOne(agent);
-      console.log(`Inserted default agent prompt for ${agent.name}`);
-    }
-  }
-}
-
 // Get all agents
 app.get('/api/agents', async (req, res) => {
   try {
-    const agents = await db.collection('agents').find({}).toArray();
+    const username = req.query.username;
+    if (!username) {
+      return res.status(400).json({ success: false, error: 'Username is required.' });
+    }
+    const agents = await db.collection('agents').find({ username }).toArray();
     res.json({ success: true, agents });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Internal server error.' });
@@ -106,7 +98,11 @@ app.get('/api/agents', async (req, res) => {
 // Get one agent
 app.get('/api/agents/:name', async (req, res) => {
   try {
-    const agent = await db.collection('agents').findOne({ name: req.params.name });
+    const username = req.query.username;
+    if (!username) {
+      return res.status(400).json({ success: false, error: 'Username is required.' });
+    }
+    const agent = await db.collection('agents').findOne({ username, name: req.params.name });
     if (!agent) return res.status(404).json({ success: false, error: 'Agent not found.' });
     res.json({ success: true, agent });
   } catch (error) {
@@ -117,10 +113,14 @@ app.get('/api/agents/:name', async (req, res) => {
 // Update one agent
 app.put('/api/agents/:name', async (req, res) => {
   try {
+    const username = req.query.username;
+    if (!username) {
+      return res.status(400).json({ success: false, error: 'Username is required.' });
+    }
     const { system_prompt } = req.body;
     if (!system_prompt) return res.status(400).json({ success: false, error: 'system_prompt is required.' });
     const result = await db.collection('agents').updateOne(
-      { name: req.params.name },
+      { username, name: req.params.name },
       { $set: { system_prompt } }
     );
     if (result.matchedCount === 0) return res.status(404).json({ success: false, error: 'Agent not found.' });
@@ -177,7 +177,7 @@ app.post('/api/chat', async (req, res) => {
     console.log('Message history length:', messages.length);
 
     // Load system prompt from agents collection
-    const agentDoc = await db.collection('agents').findOne({ name: member });
+    const agentDoc = await db.collection('agents').findOne({ username, name: member });
     let systemPrompt = agentDoc && agentDoc.system_prompt
       ? `You will be speaking with ${firstName} (username: ${username}). When messaged, greet the user using their first name. ${agentDoc.system_prompt}`
       : `You will be speaking with ${firstName} (username: ${username}). When messaged, greet the user using their first name. You are a helpful AI assistant.`;
@@ -186,10 +186,25 @@ app.post('/api/chat', async (req, res) => {
     // Prepare messages for OpenAI
     const openaiMessages = [
       { role: 'system', content: systemPrompt },
-      ...messages.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      }))
+      ...messages.map(msg => {
+        if (msg.image) {
+          // Image message: send as text (if any) and image_url
+          const arr = [];
+          if (msg.content && msg.content.trim()) {
+            arr.push({ role: msg.role, content: msg.content });
+          }
+          arr.push({
+            role: msg.role,
+            content: [
+              ...(msg.content && msg.content.trim() ? [{ type: 'text', text: msg.content }] : []),
+              { type: 'image_url', image_url: { url: msg.image } }
+            ]
+          });
+          return arr;
+        } else {
+          return { role: msg.role, content: msg.content };
+        }
+      }).flat()
     ];
 
     console.log('Sending to OpenAI...');
@@ -227,16 +242,8 @@ app.post('/api/chat', async (req, res) => {
           member,
           createdAt: new Date(),
           messages: [
-            {
-              role: 'user',
-              content: message,
-              timestamp: new Date()
-            },
-            {
-              role: 'assistant',
-              content: reply,
-              timestamp: new Date()
-            }
+            { role: 'user', content: message, image: messages[messages.length-1]?.image, timestamp: new Date() },
+            { role: 'assistant', content: reply, timestamp: new Date() }
           ]
         });
         console.log('Created new session:', sessionId);
@@ -248,16 +255,8 @@ app.post('/api/chat', async (req, res) => {
             $push: {
               messages: {
                 $each: [
-                  {
-                    role: 'user',
-                    content: message,
-                    timestamp: new Date()
-                  },
-                  {
-                    role: 'assistant',
-                    content: reply,
-                    timestamp: new Date()
-                  }
+                  { role: 'user', content: message, image: messages[messages.length-1]?.image, timestamp: new Date() },
+                  { role: 'assistant', content: reply, timestamp: new Date() }
                 ]
               }
             }
@@ -336,6 +335,15 @@ app.post('/api/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ success: false, error: 'Invalid username or password.' });
     }
+    // Ensure user-specific agent prompts exist
+    const agentsCollection = db.collection('agents');
+    for (const agent of defaultAgentPrompts) {
+      const exists = await agentsCollection.findOne({ username: user.username, name: agent.name });
+      if (!exists) {
+        await agentsCollection.insertOne({ username: user.username, name: agent.name, system_prompt: agent.system_prompt });
+        console.log(`Inserted default agent prompt for ${agent.name} (user: ${user.username})`);
+      }
+    }
     // Create JWT
     const token = jwt.sign(
       { username: user.username, firstName: user.firstName, lastName: user.lastName, email: user.email },
@@ -349,18 +357,8 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// Serve React build static files
-const buildPath = path.join(__dirname, 'build');
-app.use(express.static(buildPath));
-
-// Catch-all route to serve index.html for React Router
-app.get('*', (req, res) => {
-  res.sendFile(path.join(buildPath, 'index.html'));
-});
-
 // Start server
 connectDB().then(async () => {
-  await ensureAgentPrompts();
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     // Test OpenAI connection after server starts

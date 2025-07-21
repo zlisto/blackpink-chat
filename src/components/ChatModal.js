@@ -5,6 +5,8 @@ function ChatModal({ member, isOpen, onClose }) {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  // Add state for image
+  const [image, setImage] = useState(null);
 
   // Get current member's messages
   const currentMessages = messages[member.name] || [];
@@ -34,14 +36,49 @@ function ChatModal({ member, isOpen, onClose }) {
     // eslint-disable-next-line
   }, [isOpen, member && member.name]);
 
+  // Add image input handler
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result); // base64 string
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Add paste handler for images
+  useEffect(() => {
+    const handlePaste = (e) => {
+      if (e.clipboardData && e.clipboardData.files.length > 0) {
+        const file = e.clipboardData.files[0];
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setImage(reader.result);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('paste', handlePaste);
+    }
+    return () => window.removeEventListener('paste', handlePaste);
+  }, [isOpen]);
+
   const sendMessage = async () => {
-    if (!inputMessage.trim()) return;
+    if (!inputMessage.trim() && !image) return;
 
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     const username = user ? user.username : null;
     const firstName = user ? user.firstName : '';
 
-    const userMessage = { role: 'user', content: inputMessage };
+    // Support both text and image in user message
+    const userMessage = image
+      ? { role: 'user', content: inputMessage, image }
+      : { role: 'user', content: inputMessage };
     const updatedMessages = [...currentMessages, userMessage];
     
     // Update messages for this specific member
@@ -51,6 +88,7 @@ function ChatModal({ member, isOpen, onClose }) {
     }));
     
     setInputMessage('');
+    setImage(null);
     setIsLoading(true);
 
     try {
@@ -65,7 +103,7 @@ function ChatModal({ member, isOpen, onClose }) {
           member: member.name,
           messages: updatedMessages,
           username,
-          firstName
+          firstName,
         }),
       });
 
@@ -178,6 +216,11 @@ function ChatModal({ member, isOpen, onClose }) {
               }}>
                 {msg.content}
               </div>
+              {msg.image && (
+                <div style={{ marginTop: 4 }}>
+                  <img src={msg.image} alt="sent" style={{ maxWidth: 180, maxHeight: 180, borderRadius: 8, border: '2px solid #ff3ebf' }} />
+                </div>
+              )}
             </div>
           ))}
           {isLoading && (
@@ -213,23 +256,51 @@ function ChatModal({ member, isOpen, onClose }) {
               fontSize: 16,
             }}
           />
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            id="image-upload-input"
+            onChange={handleImageChange}
+          />
+          <label htmlFor="image-upload-input" style={{
+            background: '#ff3ebf',
+            color: 'white',
+            borderRadius: 8,
+            padding: '12px 16px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: 16,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: 4,
+          }}>
+            📷
+          </label>
           <button
             onClick={sendMessage}
-            disabled={isLoading || !inputMessage.trim()}
+            disabled={isLoading || (!inputMessage.trim() && !image)}
             style={{
               padding: '12px 24px',
               borderRadius: 8,
               background: '#ff3ebf',
               color: 'white',
               border: 'none',
-              cursor: isLoading || !inputMessage.trim() ? 'not-allowed' : 'pointer',
-              opacity: isLoading || !inputMessage.trim() ? 0.6 : 1,
+              cursor: isLoading || (!inputMessage.trim() && !image) ? 'not-allowed' : 'pointer',
+              opacity: isLoading || (!inputMessage.trim() && !image) ? 0.6 : 1,
               fontSize: 16,
             }}
           >
             Send
           </button>
         </div>
+        {image && (
+          <div style={{ marginTop: 8, marginBottom: 8, textAlign: 'left' }}>
+            <img src={image} alt="preview" style={{ maxWidth: 120, maxHeight: 120, borderRadius: 8, border: '2px solid #ff3ebf' }} />
+            <button onClick={() => setImage(null)} style={{ marginLeft: 8, color: '#ff3ebf', background: 'none', border: 'none', cursor: 'pointer' }}>Remove</button>
+          </div>
+        )}
       </div>
     </div>
   );

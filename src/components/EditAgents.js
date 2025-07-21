@@ -7,21 +7,26 @@ function EditAgents() {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
 
+  // Get logged-in user
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  const username = user ? user.username : null;
+
   // Fetch agents on mount
   useEffect(() => {
-    fetch('http://localhost:3001/api/agents')
+    if (!username) return;
+    fetch(`http://localhost:3001/api/agents?username=${encodeURIComponent(username)}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) setAgents(data.agents);
       });
-  }, []);
+  }, [username]);
 
   // Load prompt when agent is selected
   useEffect(() => {
-    if (selected) {
+    if (selected && username) {
       setMsg('');
       setLoading(true);
-      fetch(`http://localhost:3001/api/agents/${selected}`)
+      fetch(`http://localhost:3001/api/agents/${encodeURIComponent(selected)}?username=${encodeURIComponent(username)}`)
         .then(res => res.json())
         .then(data => {
           if (data.success) setPrompt(data.agent.system_prompt);
@@ -30,13 +35,13 @@ function EditAgents() {
     } else {
       setPrompt('');
     }
-  }, [selected]);
+  }, [selected, username]);
 
   const handleUpdate = async () => {
     setLoading(true);
     setMsg('');
     try {
-      const res = await fetch(`http://localhost:3001/api/agents/${selected}`, {
+      const res = await fetch(`http://localhost:3001/api/agents/${encodeURIComponent(selected)}?username=${encodeURIComponent(username)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ system_prompt: prompt })

@@ -1,70 +1,107 @@
-# Getting Started with Create React App
+# BlackPink Chat
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack web app where you can chat with AI personas of BlackPink members (and Bret "The Hitman" Hart!) powered by OpenAI GPT-4o. Each user can register, log in, and have personalized conversations with each agent, including sending images. Agent personalities and system prompts are customizable per user.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Chat with AI BlackPink members**: Jisoo, Jennie, Rosé, Lisa, and honorary member Bret Hart.
+- **Personalized experience**: Each user has their own chat history and can customize agent personalities.
+- **Image support**: Send images to the AI and receive context-aware responses.
+- **Account system**: Register, log in, and log out securely.
+- **Edit agent prompts**: Fine-tune how each AI agent responds to you.
+- **Modern, responsive UI**: Built with React and styled for a fun, engaging experience.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Architecture & Main Components
 
-### `npm test`
+### Frontend (React)
+- **`src/App.js`**: Main app, routing, and navigation.
+- **`src/components/ChatModal.js`**: Chat interface modal for each member, supports text and image messages.
+- **`src/components/Register.js`**: User registration form.
+- **`src/components/Login.js`**: User login form.
+- **`src/components/Logout.js`**: Logout button.
+- **`src/components/EditAgents.js`**: UI to view and edit system prompts for each agent.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Backend (Node.js/Express)
+- **`server.js`**: REST API server, handles authentication, chat, agent management, and OpenAI integration.
+- **MongoDB**: Stores users, chat histories, and agent prompts (collections: `users`, `chats`, `agents`).
+- **OpenAI**: Uses GPT-4o for chat completions, with support for image input.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Setup & Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Prerequisites
+- **Node.js** (v16+ recommended)
+- **npm**
+- **MongoDB** (local or cloud, e.g. MongoDB Atlas)
+- **OpenAI API Key** (with GPT-4o access)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Environment Variables
+Create a `.env` file in the project root with the following:
 
-### `npm run eject`
+```
+OPENAI_API_KEY=your-openai-api-key-here
+MONGODB_URI=your-mongodb-connection-string-here
+JWT_SECRET=your-jwt-secret-here
+PORT=3001 # (optional, default 3001)
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Local Development
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+2. **Start both backend and frontend:**
+   ```bash
+   npm run dev
+   ```
+   - The backend runs on `http://localhost:3001`
+   - The frontend runs on `http://localhost:3000`
+3. **Register a new account** and start chatting!
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Usage
+- **Register**: Create an account with username, password, first/last name, and email.
+- **Login**: Access your personalized chat and agent settings.
+- **Chat**: Click a member, open the chat modal, and send messages (text or images).
+- **Edit Agents**: Go to "Edit Agents" to customize how each AI responds to you.
+- **Delete Memories**: Remove your chat history with any member.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## API Endpoints (Summary)
+- `POST /api/register` — Register a new user
+- `POST /api/login` — Log in and receive JWT
+- `GET /api/agents?username=...` — List your agents
+- `GET /api/agents/:name?username=...` — Get a specific agent
+- `PUT /api/agents/:name?username=...` — Update agent system prompt
+- `POST /api/chat` — Send a message to an agent (with chat history)
+- `GET /api/chats/:member?username=...` — Get chat history with a member
+- `DELETE /api/chats/:member?username=...` — Delete chat history with a member
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Deployment (Online)
 
-### Code Splitting
+To deploy online (e.g. on Render, Heroku, Vercel, or your own VPS):
+1. **Set environment variables** in your hosting provider (see above).
+2. **Build the frontend:**
+   ```bash
+   npm run build
+   ```
+3. **Serve the build** with your backend, or use a service that supports both Node.js and static files.
+4. **Ensure MongoDB and OpenAI API are accessible** from your deployed environment.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## License
+MIT (or specify your own)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Made with 💖 by BlackPink fans!**

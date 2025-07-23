@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackpink Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-btn.active {
+            border-color: #F472B6; /* pink-400 */
+            color: #F472B6; /* pink-400 */
+            background-color: rgba(244, 114, 182, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500">
+                Blackpink Chat
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-400 mt-2">A vibe coded AI app</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="mb-8 border-b border-gray-700">
+            <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
+                <button class="tab-btn active text-lg font-semibold p-4 border-b-2 border-transparent rounded-t-lg hover:text-pink-300 hover:border-pink-300 transition-colors duration-200" data-tab="overview">
+                    Project Overview
+                </button>
+                <button class="tab-btn text-lg font-semibold p-4 border-b-2 border-transparent rounded-t-lg hover:text-pink-300 hover:border-pink-300 transition-colors duration-200" data-tab="features">
+                    Key Features
+                </button>
+                <button class="tab-btn text-lg font-semibold p-4 border-b-2 border-transparent rounded-t-lg hover:text-pink-300 hover:border-pink-300 transition-colors duration-200" data-tab="tech">
+                    Technology Stack
+                </button>
+                <button class="tab-btn text-lg font-semibold p-4 border-b-2 border-transparent rounded-t-lg hover:text-pink-300 hover:border-pink-300 transition-colors duration-200" data-tab="architecture">
+                    Architecture
+                </button>
+                <button class="tab-btn text-lg font-semibold p-4 border-b-2 border-transparent rounded-t-lg hover:text-pink-300 hover:border-pink-300 transition-colors duration-200" data-tab="business">
+                    Business Potential
+                </button>
+            </nav>
+        </div>
+
+        <!-- Tab Content -->
+        <main>
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active animate-fade-in">
+                <div class="bg-gray-800 p-8 rounded-lg shadow-2xl">
+                    <h2 class="text-4xl font-bold text-pink-400 mb-6">Concept</h2>
+                    <p class="text-2xl text-gray-300 leading-relaxed">
+                        An interactive web application that provides a unique fan engagement experience. Users can register and hold AI-powered conversations with digital personas of the Blackpink members (and a special guest, Bret "The Hitman" Hart).
+                    </p>
+                    <div class="mt-8 border-t border-gray-700 pt-6">
+                        <h3 class="text-3xl font-bold text-pink-400 mb-4">Unique Selling Proposition (USP)</h3>
+                        <ul class="list-disc list-inside text-xl text-gray-300 space-y-3">
+                            <li><span class="font-semibold">Personalized Interaction:</span> Moves beyond static content to dynamic, one-on-one conversations.</li>
+                            <li><span class="font-semibold">Persistent Memory:</span> Chat history is saved, creating a feeling of an ongoing relationship with the AI persona.</li>
+                            <li><span class="font-semibold">User Customization:</span> Power users can modify the AI's core personality, offering a deeper level of engagement.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Tab -->
+            <div id="features" class="tab-content animate-fade-in">
+                 <div class="bg-gray-800 p-8 rounded-lg shadow-2xl">
+                    <h2 class="text-4xl font-bold text-pink-400 mb-6">Core Functionality</h2>
+                    <ul class="list-none text-xl text-gray-300 space-y-6">
+                        <li class="flex items-start">
+                            <span class="text-pink-400 font-bold text-2xl mr-4">&#10003;</span>
+                            <div><strong class="text-white">User Authentication:</strong> Secure registration and login system using JWT and bcrypt hashing for a personalized and protected user experience.</div>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="text-pink-400 font-bold text-2xl mr-4">&#10003;</span>
+                            <div><strong class="text-white">AI Chat Personas:</strong> Converse with distinct AI models for Jisoo, Jennie, Rosé, and Lisa, each with a unique system prompt defining their personality.</div>
+                        </li>
+                         <li class="flex items-start">
+                             <span class="text-pink-400 font-bold text-2xl mr-4">&#10003;</span>
+                            <div><strong class="text-white">Persistent Conversations:</strong> Chat history is stored in MongoDB, allowing users to continue conversations where they left off.</div>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="text-pink-400 font-bold text-2xl mr-4">&#10003;</span>
+                            <div><strong class="text-white">Image Recognition (via GPT-4o):</strong> The AI can "see" and respond to images uploaded by the user during a chat.</div>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="text-pink-400 font-bold text-2xl mr-4">&#10003;</span>
+                            <div><strong class="text-white">Customizable AI Agents:</strong> Authenticated users can edit the underlying system prompts to fine-tune the AI's personality and responses.</div>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="text-pink-400 font-bold text-2xl mr-4">&#10003;</span>
+                            <div><strong class="text-white">Memory Management:</strong> Users have full control to delete their chat history with any member, ensuring data privacy.</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tech Stack Tab -->
+            <div id="tech" class="tab-content animate-fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold text-pink-400">Frontend</h3>
+                        <p class="text-lg mt-2">React.js</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold text-pink-400">Backend</h3>
+                        <p class="text-lg mt-2">Node.js & Express.js</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold text-pink-400">Database</h3>
+                        <p class="text-lg mt-2">MongoDB</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold text-pink-400">AI Engine</h3>
+                        <p class="text-lg mt-2">OpenAI GPT-4o API</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold text-pink-400">Authentication</h3>
+                        <p class="text-lg mt-2">JWT & bcrypt.js</p>
+                    </div>
+                     <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold text-pink-400">Deployment</h3>
+                        <p class="text-lg mt-2">Full-stack MERN architecture</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Architecture Tab -->
+            <div id="architecture" class="tab-content animate-fade-in">
+                <div class="bg-gray-800 p-8 rounded-lg shadow-2xl">
+                    <h2 class="text-4xl font-bold text-pink-400 mb-6">System Flow</h2>
+                    <div class="text-lg font-mono text-gray-300 bg-gray-900 p-6 rounded-md">
+                        <div class="flex flex-col space-y-4">
+                            <div class="flex items-center">
+                                <span class="text-purple-400">[User's Browser]</span>
+                                <span class="text-gray-500 mx-2">-- Interacts with --></span>
+                                <span class="text-cyan-400">[React Frontend]</span>
+                            </div>
+                            <div class="pl-4">
+                                <p>&#9492;&#9472; (Handles UI, State, User Input)</p>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-cyan-400">[React Frontend]</span>
+                                <span class="text-gray-500 mx-2"><-- API Calls --></span>
+                                <span class="text-green-400">[Node.js/Express Backend]</span>
+                            </div>
+                             <div class="pl-4">
+                                <p>&#9492;&#9472; (Handles Logic, Auth, API Routing)</p>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-green-400">[Node.js Backend]</span>
+                                <span class="text-gray-500 mx-2"><-- CRUD Ops --></span>
+                                <span class="text-yellow-400">[MongoDB]</span>
+                                <span class="text-gray-500 ml-2">(Users, Chats, Prompts)</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-green-400">[Node.js Backend]</span>
+                                <span class="text-gray-500 mx-2">-- Sends Prompt --></span>
+                                <span class="text-pink-400">[OpenAI API]</span>
+                            </div>
+                             <div class="flex items-center">
+                                <span class="text-pink-400">[OpenAI API]</span>
+                                <span class="text-gray-500 mx-2"><-- Returns Response --</span>
+                                <span class="text-green-400">[Node.js Backend]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Potential Tab -->
+            <div id="business" class="tab-content animate-fade-in">
+                <div class="bg-gray-800 p-8 rounded-lg shadow-2xl">
+                    <h2 class="text-4xl font-bold text-pink-400 mb-6">Monetization & Growth Strategy</h2>
+                    <div class="space-y-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">Freemium Model</h3>
+                            <p class="text-lg text-gray-300">Offer core chat features for free to attract a large user base. A premium subscription could unlock advanced features.</p>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">Potential Premium Features</h3>
+                            <ul class="list-disc list-inside text-lg text-gray-300 space-y-2">
+                                <li>Unlimited conversation history and memory.</li>
+                                <li>Access to exclusive or limited-time AI personas.</li>
+                                <li>Advanced AI agent customization tools.</li>
+                                <li>Future capabilities like AI-generated voice notes.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">Strategic Partnerships</h3>
+                            <p class="text-lg text-gray-300">Collaborate with entertainment agencies to create official, verified AI chat experiences for other artists, expanding the platform's reach.</p>
+                        </div>
+                         <div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">Data Analytics</h3>
+                            <p class="text-lg text-gray-300">Leverage anonymized conversation data to provide valuable insights into fan sentiment, trending topics, and brand perception for market research.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.getAttribute('data-tab');
+
+                // Deactivate all tabs and content
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                // Activate clicked tab and corresponding content
+                tab.classList.add('active');
+                document.getElementById(target).classList.add('active');
+            });
+        });
+
+        // Simple fade-in animation
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fade-in {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fade-in {
+                animation: fade-in 0.5s ease-out forwards;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+</body>
+</html>

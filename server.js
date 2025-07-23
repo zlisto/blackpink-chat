@@ -364,4 +364,13 @@ connectDB().then(async () => {
     // Test OpenAI connection after server starts
     testOpenAI();
   });
+});
+
+// Serve static files from the React app build folder
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'build')));
+
+// Catchall: send back React's index.html for any non-API route
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 }); 

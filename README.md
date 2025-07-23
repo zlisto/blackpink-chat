@@ -72,6 +72,56 @@ PORT=3001 # (optional, default 3001)
 
 ---
 
+## Deploying on Render
+
+You can deploy this app as a **single fullstack Web Service** on [Render](https://render.com) for free (with some usage limits). This will run both the backend (API) and frontend (React) together—no code changes needed!
+
+### 1. Prepare Your Code
+- Make sure your latest code is pushed to GitHub (or GitLab/Bitbucket).
+- Your `package.json` should have:
+  - `"start": "node server.js"` (so Render runs your backend)
+  - `"build": "react-scripts build"`
+
+### 2. Create a Web Service on Render
+- Go to your Render dashboard.
+- Click **"New +" → "Web Service"** (do NOT choose "Static Site").
+- Connect your repo and fill out the form:
+  - **Build Command:**
+    ```
+    npm install && npm run build
+    ```
+  - **Start Command:**
+    ```
+    node server.js
+    ```
+  - **Publish Directory:**
+    (leave blank)
+
+### 3. Set Environment Variables
+- In the Render dashboard, add the following environment variables (click "Add Environment Variable"):
+  - `OPENAI_API_KEY` — your OpenAI API key
+  - `MONGODB_URI` — your MongoDB connection string (Atlas or other)
+  - `PORT` — (optional, default is 3001)
+
+### 4. Deploy
+- Click **"Create Web Service"**.
+- Render will install dependencies, build the React app, and start your backend.
+- The backend will serve both the API and the React frontend from the same URL.
+
+### 5. Access Your App
+- Once deployed, you’ll get a URL like `https://your-app-name.onrender.com`.
+- Visit this URL to use your app!
+
+### 6. Common Pitfalls
+- **Do NOT use "Static Site"**—it will only serve the frontend, and your API will not work.
+- **Do NOT set "Publish Directory"**—leave it blank for fullstack apps.
+- **If you see build/start errors:**
+  - Double-check your Build/Start commands and environment variables.
+  - Make sure your `start` script in `package.json` is `node server.js`.
+- **MongoDB must be accessible from Render** (use MongoDB Atlas or a public MongoDB instance).
+
+---
+
 ## Usage
 - **Register**: Create an account with username, password, first/last name, and email.
 - **Login**: Access your personalized chat and agent settings.

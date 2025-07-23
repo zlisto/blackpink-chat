@@ -143,22 +143,5 @@ You can deploy this app as a **single fullstack Web Service** on [Render](https:
 
 ---
 
-## Deployment (Online)
-
-To deploy online (e.g. on Render, Heroku, Vercel, or your own VPS):
-1. **Set environment variables** in your hosting provider (see above).
-2. **Build the frontend:**
-   ```bash
-   npm run build
-   ```
-3. **Serve the build** with your backend, or use a service that supports both Node.js and static files.
-4. **Ensure MongoDB and OpenAI API are accessible** from your deployed environment.
-
----
-
-## License
-MIT (or specify your own)
-
----
 
 **Made with 💖 by BlackPink fans!**

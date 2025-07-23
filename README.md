@@ -59,4 +59,56 @@ PORT=3001 # (optional, default 3001)
 
 ### Local Development
 1. **Install dependencies:**
+   ```bash
+   npm install
    ```
+2. **Start both backend and frontend:**
+   ```bash
+   npm run dev
+   ```
+   - The backend runs on `http://localhost:3001`
+   - The frontend runs on `http://localhost:3000`
+3. **Register a new account** and start chatting!
+
+---
+
+## Usage
+- **Register**: Create an account with username, password, first/last name, and email.
+- **Login**: Access your personalized chat and agent settings.
+- **Chat**: Click a member, open the chat modal, and send messages (text or images).
+- **Edit Agents**: Go to "Edit Agents" to customize how each AI responds to you.
+- **Delete Memories**: Remove your chat history with any member.
+
+---
+
+## API Endpoints (Summary)
+- `POST /api/register` — Register a new user
+- `POST /api/login` — Log in and receive authentication token
+- `GET /api/agents?username=...` — List your agents
+- `GET /api/agents/:name?username=...` — Get a specific agent
+- `PUT /api/agents/:name?username=...` — Update agent system prompt
+- `POST /api/chat` — Send a message to an agent (with chat history)
+- `GET /api/chats/:member?username=...` — Get chat history with a member
+- `DELETE /api/chats/:member?username=...` — Delete chat history with a member
+
+---
+
+## Deployment (Online)
+
+To deploy online (e.g. on Render, Heroku, Vercel, or your own VPS):
+1. **Set environment variables** in your hosting provider (see above).
+2. **Build the frontend:**
+   ```bash
+   npm run build
+   ```
+3. **Serve the build** with your backend, or use a service that supports both Node.js and static files.
+4. **Ensure MongoDB and OpenAI API are accessible** from your deployed environment.
+
+---
+
+## License
+MIT (or specify your own)
+
+---
+
+**Made with 💖 by BlackPink fans!**
